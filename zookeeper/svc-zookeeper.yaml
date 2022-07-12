@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: bipower-zookeeper
+  name: bipower-zookeeper
+  namespace: bipower-prod
+spec:
+  ports:
+    - port: 2181
+      targetPort: 2181
+      protocol: TCP
+  selector:
+    app: bipower-zookeeper

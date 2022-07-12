@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Service
+metadata:
+  labels:
+    app: kafka
+  name: kafka
+  namespace: prod
+spec:
+  ports:
+  - port: 9092
+  selector:
+    app: kafka
+---
