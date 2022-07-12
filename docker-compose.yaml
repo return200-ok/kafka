@@ -1,0 +1,31 @@
+version: "3"
+services:
+  zookeeper:
+    image: 192.168.3.35:8297/zookeeper:3.5
+    hostname: zookeeper
+    ports:
+      - 8352:2181
+    environment:
+      ZOO_MAX_CLIENT_CNXNS: 0
+  kafka:
+    image: 192.168.3.35:8297/kafka:2.12-2.2.0
+    hostname: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - 8353:8353
+    environment:
+      KAFKA_LISTENERS: 'LISTENER_INTERNAL://kafka:9092,LISTENER_EXTERNAL://0.0.0.0:8353'
+      KAFKA_ADVERTISED_LISTENERS: 'LISTENER_INTERNAL://kafka:9092,LISTENER_EXTERNAL://192.168.3.35:8353'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'LISTENER_INTERNAL:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'LISTENER_INTERNAL'
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      KAFKA_JMX_OPTS: '-Dmax.poll.interval.ms=30000'
+    volumes:
+      - /u01/app/bccs3/kafka-data/la:/tmp/kafka-logs
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: '2'
+          memory: '4G'
